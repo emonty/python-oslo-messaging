@@ -66,20 +66,11 @@ Documentation for the oslo.messaging library.
 %prep
 %setup -q -n %{sname}-%{upstream_version}
 
-# Remove bundled egg-info
-rm -rf %{sname}.egg-info
-# let RPM handle deps
-sed -i '/setup_requires/d; /install_requires/d; /dependency_links/d' setup.py
-
-# Remove the requirements file so that pbr hooks don't add it
-# to distutils requires_dist config
-rm -rf {test-,}requirements.txt
-
 %build
-%{__python} setup.py build
+SKIP_PIP_INSTALL=1 %{__python} setup.py build
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
+SKIP_PIP_INSTALL=1 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
 # Delete tests
 rm -fr %{buildroot}%{python_sitelib}/tests
